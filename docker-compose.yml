@@ -1,0 +1,22 @@
+version: '3'
+services:
+  chat-server:
+    build: .
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      # 可通过环境变量覆盖默认配置，如 JWT_SECRET 等
+      - JWT_SECRET=wIebVIFUSBPjcm5nJ7IjNZddNl04CfIOTZIaBHlSn1mWvPim9l
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/chatdb?schema=public
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: chatdb
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    # 不暴露数据库端口给外部
